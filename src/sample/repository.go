@@ -17,7 +17,7 @@ func NewRepository(db *pgxpool.Pool) *Repository {
 type SampleRepo interface {
 	Create(*gin.Context, types.CreateSampleReq) (*types.Sample, error)
 	FindAll(*gin.Context) ([]*types.Sample, error) 
-	FindOne() error
+	FindOneById(*gin.Context, int) (*types.Sample, error)
 	Update()  error
 	Remove()  error
 }
@@ -57,9 +57,16 @@ func (repository *Repository) FindAll(ctx *gin.Context) ([]*types.Sample, error)
 	return samples, nil
 }
 
-func (s *Repository) FindOne() error {
-	// actual implementation
-	return nil
+func (repository *Repository) FindOneById(ctx *gin.Context, id int) (*types.Sample, error) {
+	var sample types.Sample
+
+	err := repository.db.QueryRow(ctx, "SELECT id, data FROM sample WHERE id = $1", id).
+		Scan(&sample.Id, &sample.Data)
+	if err != nil {
+		return nil, err
+	}
+
+	return &sample, nil
 }
 
 func (s *Repository) Update() error {

@@ -2,8 +2,10 @@ package utils
 
 import (
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -37,6 +39,21 @@ func BindAndValidate(ctx *gin.Context, obj interface{}) bool {
 		return true
 	}
 	return false
+}
+
+func GetParamInt(ctx *gin.Context, param string) (int, bool) {
+	idStr := ctx.Param(param)
+	if idStr == "" {
+		Error(ctx, http.StatusBadRequest, fmt.Errorf("missing %s query parameter", param))
+		return 0, false
+	}
+
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		Error(ctx, http.StatusBadRequest, fmt.Errorf("invalid %s query parameter", param))
+		return 0, false
+	}
+	return id, true
 }
 
 func ValidationErrorToText(fe validator.FieldError) string {

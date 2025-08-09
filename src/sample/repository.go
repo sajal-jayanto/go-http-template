@@ -13,10 +13,34 @@ func NewRepository(db *pgxpool.Pool) *Repository {
 }
 
 type SampleRepo interface {
-	CreateSample() error
+	Create()  error
+	FindAll() error
+	FindOne() error
+	Update()  error
+	Remove()  error
 }
 
-func (s *Repository) CreateSample() error {
+func (s *Repository) Create() error {
+	// actual implementation
+	return nil
+}
+
+func (s *Repository) FindAll() error {
+	// actual implementation
+	return nil
+}
+
+func (s *Repository) FindOne() error {
+	// actual implementation
+	return nil
+}
+
+func (s *Repository) Update() error {
+	// actual implementation
+	return nil
+}
+
+func (s *Repository) Remove() error {
 	// actual implementation
 	return nil
 }

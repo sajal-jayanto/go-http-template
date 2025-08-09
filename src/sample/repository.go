@@ -1,7 +1,9 @@
 package sample
 
 import (
+	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/sajal-jayanto/go-http-template/types"
 )
 
 type Repository struct {
@@ -13,16 +15,24 @@ func NewRepository(db *pgxpool.Pool) *Repository {
 }
 
 type SampleRepo interface {
-	Create()  error
+	Create(*gin.Context , types.CreateSampleReq) (*types.Sample, error)
 	FindAll() error
 	FindOne() error
 	Update()  error
 	Remove()  error
 }
 
-func (s *Repository) Create() error {
-	// actual implementation
-	return nil
+func (repository *Repository) Create(ctx *gin.Context, sample types.CreateSampleReq) (*types.Sample, error) {
+	var createdSample types.Sample
+	err := repository.db.QueryRow(ctx, 
+		"INSERT INTO sample (data) VALUES ($1) RETURNING id, data", 
+		sample.Data,
+	).Scan(&createdSample.Id, &createdSample.Data)
+	if err != nil {	
+		return nil, err
+	}
+	
+	return &createdSample, nil
 }
 
 func (s *Repository) FindAll() error {

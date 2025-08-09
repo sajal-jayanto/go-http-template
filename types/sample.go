@@ -1,8 +1,8 @@
 package types
 
 type Sample struct {
-	ID        int       `json:"id"`
-	DATA      string    `json:"data"`
+	Id        int       `json:"id"`
+	Data      string    `json:"data"`
 }
 
 type CreateSampleReq struct {

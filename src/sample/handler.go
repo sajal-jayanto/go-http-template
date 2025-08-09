@@ -17,12 +17,17 @@ func NewHandler(sampleRepo SampleRepo) *Handler {
 }
 
 func (handler *Handler) CreateSample(ctx *gin.Context) {	
-	var body types.CreateSampleReq
-	if utils.BindAndValidate(ctx, &body) {
+	var sample types.CreateSampleReq
+	if utils.BindAndValidate(ctx, &sample) {
 		return 
 	}
 
-	utils.JSON(ctx, http.StatusOK, gin.H{ "body" : body.Data })
+	date, err := handler.sampleRepo.Create(ctx, sample)
+	if err != nil {
+		utils.Error(ctx, http.StatusInternalServerError, err)
+	}
+
+	utils.JSON(ctx, http.StatusCreated, date)
 }
 
 func (handler *Handler) Two(ctx *gin.Context) {	

@@ -1,6 +1,7 @@
 package sample
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -30,6 +31,12 @@ func (handler *Handler) CreateSample(ctx *gin.Context) {
 	utils.JSON(ctx, http.StatusCreated, date)
 }
 
-func (handler *Handler) Two(ctx *gin.Context) {	
-	utils.JSON(ctx, http.StatusOK, gin.H{ "two" : "two" })
+func (handler *Handler) FindAllSample(ctx *gin.Context) {	
+	samples, err := handler.sampleRepo.FindAll(ctx)
+	if err != nil{
+		fmt.Println(samples)
+		utils.Error(ctx, http.StatusInternalServerError, err)
+	}
+
+	utils.JSON(ctx, http.StatusOK, samples)
 }

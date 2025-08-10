@@ -8,3 +8,8 @@ type Sample struct {
 type CreateSampleReq struct {
 	Data string `json:"data" binding:"required,min=20"`
 }
+
+type UpdateSampleReq struct {
+	Data string `json:"data" binding:"required"`
+}
+

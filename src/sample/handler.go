@@ -56,3 +56,37 @@ func (handler *Handler) FindOneSample(ctx *gin.Context) {
 	utils.JSON(ctx, http.StatusOK, sample)
 }
 
+func (handler *Handler) UpdateSample(ctx *gin.Context){
+	id, ok := utils.GetParamInt(ctx, "id")
+	if !ok {
+		return 
+	}
+	
+	var sample types.UpdateSampleReq
+	if utils.BindAndValidate(ctx, &sample) {
+		return 
+	}
+
+	err := handler.sampleRepo.UpdateById(ctx, id, sample)
+	if err != nil {
+		utils.Error(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	utils.JSON(ctx, http.StatusOK, gin.H{"success": true})
+}
+
+func (handler *Handler) RemoveSample(ctx *gin.Context){
+	id, ok := utils.GetParamInt(ctx, "id")
+	if !ok {
+		return 
+	}
+
+	err := handler.sampleRepo.RemoveById(ctx, id)
+	if err != nil {
+		utils.Error(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	utils.JSON(ctx, http.StatusOK, gin.H{"success": true})
+}

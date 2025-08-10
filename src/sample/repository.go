@@ -18,8 +18,8 @@ type SampleRepo interface {
 	Create(*gin.Context, types.CreateSampleReq) (*types.Sample, error)
 	FindAll(*gin.Context) ([]*types.Sample, error) 
 	FindOneById(*gin.Context, int) (*types.Sample, error)
-	Update()  error
-	Remove()  error
+	UpdateById(*gin.Context, int, types.UpdateSampleReq)  error
+	RemoveById(*gin.Context, int)  error
 }
 
 func (repository *Repository) Create(ctx *gin.Context, sample types.CreateSampleReq) (*types.Sample, error) {
@@ -69,12 +69,18 @@ func (repository *Repository) FindOneById(ctx *gin.Context, id int) (*types.Samp
 	return &sample, nil
 }
 
-func (s *Repository) Update() error {
-	// actual implementation
+func (repository *Repository) UpdateById(ctx *gin.Context , id int , reqBody types.UpdateSampleReq) error {
+	_, err := repository.db.Exec(ctx, "UPDATE sample SET data = $1 WHERE id = $2", reqBody.Data, id)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
-func (s *Repository) Remove() error {
-	// actual implementation
+func (repository *Repository) RemoveById(ctx *gin.Context, id int) error {
+	_, err := repository.db.Exec(ctx, "DELETE FROM sample WHERE id = $1", id)
+	if err != nil {
+		return err
+	}
 	return nil
 }
